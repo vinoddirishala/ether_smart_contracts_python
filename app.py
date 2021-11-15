@@ -19,11 +19,13 @@ if web3.isConnected():
     privateKey = "b7d578d85714801883979093479417801a9c15a682c8eb5cf7e556a9cbb54ed8"
 
     nonce = web3.eth.getTransactionCount(account1)
+    print(web3.toInt(web3.eth.get_balance(account1)))
+
 
     tx = {
         'nonce':nonce,
         'to':account2,
-        'value':web3.toWei(1,'ether'),
+        'value':web3.toWei(0.00001,'ether'),
         'gas':2000000,
         'gasPrice':web3.toWei('50','gwei')
     }
@@ -32,6 +34,7 @@ if web3.isConnected():
     txHash = web3.eth.sendRawTransaction(signedTX.rawTransaction)
     print(web3.toHex(txHash))
 
+    print(web3.toInt(web3.eth.get_balance(account1)))
 
 else:
     print("Connect to wallet to continue")
