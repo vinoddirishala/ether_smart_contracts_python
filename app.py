@@ -1,7 +1,7 @@
 from eth_account import Account
 from eth_account.signers.local import LocalAccount
 from eth_typing import abi
-from web3 import Web3
+from web3 import Web3, eth
 import secrets
 import os
 import json
@@ -14,15 +14,15 @@ load_dotenv()
 
 #generate private key and wallet address
 privateKeyWithOutPrefix = secrets.token_hex(32)
-privateKey = "0x"+privateKeyWithOutPrefix
-walletAddress = Account.from_key(privateKey)
+#privateKey = "0x"+privateKeyWithOutPrefix
+#walletAddress = Account.from_key(privateKey)
 
 
 #fromPrivateKey = "b7d578d85714801883979093479417801a9c15a682c8eb5cf7e556a9cbb54ed8"
 #fromWalletAddress = "0x2bB82C830Efe707C864b5bfEad7e5610459AB240"
 
-privateKey = "5f8970adc9d9fe3d8a8981a848ee7c4bff9fd085d6977f4b4ea7b5cd27da7584"
-walletAddress = "0x4E140256a24E42396dF7953Ce76067F97d906788"
+privateKey = "0xf0d57bbd40eb72c8b6a246d06cbcb6525ef7bf7fcaa7564102415b8373c49259"
+walletAddress = "0xA1712c33D84EaFd76a9202C06B5Aa1E7767470d9"
 
 #load data from env file
 rpcURL = os.environ['RPC_URL']
@@ -31,6 +31,9 @@ byteCode = os.environ['CONTRACT_BYTE_CDOE']
 
 web3 = Web3(Web3.HTTPProvider(rpcURL))
 
+#print(privateKey+"====="+walletAddress.address)
+
+web3.eth.defaultAccount = walletAddress
 
 
 if web3.isConnected():
@@ -51,12 +54,17 @@ if web3.isConnected():
 
     guess_number = web3.eth.contract(abi=abiJson,bytecode=byteCode)
     print(web3.eth.getTransactionCount(walletAddress))
+
+    print(web3.eth.get_balance(walletAddress))
+    print(walletAddress)
+    
+
     transactionBody = {
-       # 'nonce':web3.eth.getTransactionCount(walletAddress.address),
+        #'nonce':web3.eth.getTransactionCount(walletAddress.address),
         'nonce':web3.eth.getTransactionCount(walletAddress),
         'value':web3.toWei(0.00001,'ether'),
         'gas':2000000,
-        'gasPrice':web3.toWei('0.00005','gwei')
+        'gasPrice':20000000000,
     }
     signTransaction = web3.eth.account.sign_transaction(transactionBody,privateKey) 
     txnHash = web3.eth.sendRawTransaction(signTransaction.rawTransaction)
